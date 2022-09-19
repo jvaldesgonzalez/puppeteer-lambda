@@ -60,13 +60,6 @@ provider:
 #    - include-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
-    description: PING
-    events:
-      - httpApi:
-          path: /hello
-          method: GET
   generate:
     handler: handler.generate
     memorySize: 1024
