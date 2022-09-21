@@ -65,9 +65,9 @@ functions:
     memorySize: 1024
     timeout: 15
     events:
-      - httpApi:
+      - http:
           path: /generate
-          method: GET
+          method: POST
     layers:
       - arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:31
 #    Define function environment variables here

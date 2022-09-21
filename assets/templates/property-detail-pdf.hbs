@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ficha Apartamentos</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&family=Ubuntu:wght@500&display=swap');
+
+      body {
+        margin: 0;
+        padding: 0;
+        width: 8.5in;
+        /* background-color: rgb(171, 226, 146); */
+        font-family: 'Source Sans Pro';
+      }
+
+      h2 {
+        color: #081c59;
+        font-size: 1.6em;
+        margin-bottom: 1.7em;
+      }
+
+      .wrapper {
+        width: 8.5in !important;
+      }
+
+      .main-picture {
+        position: fixed;
+        top: 0;
+        width: inherit;
+        z-index: -1;
+        overflow-x: hidden;
+        height: 100%;
+      }
+
+      .main-picture img {
+        width: 100%;
+        object-fit: cover;
+      }
+
+      .skew {
+        position: absolute;
+        top: 80px;
+        background-color: #fff;
+        min-height: 400px;
+        margin: 190px 0px;
+        width: inherit;
+        transform: skewY(5deg);
+        z-index: -1;
+        border-top-left-radius: 40px;
+      }
+
+      .heading {
+        box-sizing: border-box;
+        height: 100px;
+        width: 100%;
+        background: #fff;
+        padding-left: 2em;
+        padding-bottom: 2em;
+        background-color: red;
+
+        position: absolute;
+        top: 0;
+        margin-top: 300px;
+        background-color: transparent;
+      }
+
+      .e1 {
+        position: absolute;
+        bottom: -65px;
+        z-index: -1;
+        right: 60px;
+        overflow: hidden;
+      }
+
+      .e2 {
+        position: absolute;
+        bottom: 25px;
+        z-index: -1;
+        right: 170px;
+        overflow: hidden;
+      }
+
+      .heading span {
+        display: block;
+      }
+
+      .title {
+        font-family: 'Source Sans Pro';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 1.4rem;
+        line-height: 42px;
+        color: #081c59;
+      }
+
+      .value {
+        font-family: 'Ubuntu';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 48px;
+        line-height: 36px;
+        color: #1c6ee8;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 55% 1fr;
+        margin-top: 400px;
+      }
+
+      .pictures {
+        display: grid;
+      }
+
+      .details {
+        display: grid;
+        font-family: 'Source Sans Pro';
+        background-color: #ebf2ff;
+        color: #26384a;
+      }
+
+      .details > div {
+        padding-left: 2.5em;
+      }
+
+      .item {
+        display: grid;
+        grid-template-columns: 35px 1fr;
+        padding-bottom: 1.5em;
+        font-size: 1.3em;
+        align-items: center;
+      }
+
+      .address {
+        background-color: #081c59;
+        color: #fff;
+        height: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 2.5em;
+      }
+
+      .address span {
+        display: block;
+        font-size: 1.5em;
+        padding: 0.3em 0;
+      }
+
+      .map {
+      }
+
+      .map img {
+        width: 100%;
+        object-fit: cover;
+      }
+
+      .images {
+        display: grid;
+        row-gap: 3px;
+      }
+
+      .images img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+      }
+
+      .costos {
+      }
+
+      .costos span {
+        display: block;
+      }
+
+      .costos span:nth-child(2) {
+        font-weight: bold;
+      }
+
+      .divider {
+        border-bottom: 1px solid #dee1e4;
+      }
+
+      .footer {
+        background-color: #081c59;
+        color: #fff;
+        display: grid;
+        place-items: center;
+        line-height: 36px;
+        font-size: 1.4em;
+        padding: 2em;
+      }
+
+      .footer span {
+        display: block;
+      }
+
+      .cc {
+        display: grid;
+        place-items: center;
+        background-color: #081c59;
+        color: #fff;
+        font-size: 1.2em;
+        padding: 2em 0;
+        /* margin: 0 2em; */
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    {{#findInArray this 'type' 'general'}}
+    {{#plainArrayToJson fields 'name' 'value'}}
+    <div class="wrapper">
+      <div class="main-picture">
+        <img src="{{imageMain}}" alt="" />
+      </div>
+      <div class="skew"></div>
+      <div class="heading">
+        <span class="title">{{briefFeature}}</span>
+        <span class="value">{{price}}</span>
+        <div class="elipsis">
+          <img class="e1" src="https://acasa-core-ruby.s3.amazonaws.com/icons/blue-elipsis.svg"/>
+          <img class="e2" src="https://acasa-core-ruby.s3.amazonaws.com/icons/yellow-elipsis.svg"/>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="pictures">
+        <div class="address">
+          <span>{{address}} - {{capitalize city}} </span>
+          <span>{{actualAge}}</span>
+        </div>
+        <div class="map">
+          <img src="{{imageMap}}" alt="" />
+        </div>
+        {{/plainArrayToJson}}
+        {{/findInArray}}
+
+        {{#findInArray this 'type' 'images'}}
+          {{#slice fields start=0 end=4}}
+            <div class="images">
+              {{#each this }}
+              <img src="{{value}}" alt="" />
+              {{/each}}
+            </div>
+          {{/slice}}
+        {{/findInArray}}
+      </div>
+      <div class="details">
+        <div class="features divider">
+          <h2>Características</h2>
+          {{#findInArray this 'type' 'properties'}}
+            {{#each fields }}
+            <div class="item">
+              <img src="https://acasa-core-ruby.s3.amazonaws.com/icons/{{icon}}.svg"/>
+              <span>{{value}}</span>
+            </div>
+            {{/each}}
+          {{/findInArray}}
+        </div>
+        <div class="costos divider">
+          <h2>Valores estimados</h2>
+          {{#findInArray this 'type' 'values'}}
+          {{#each fields }}
+          <div class="item">
+            <img src="https://acasa-core-ruby.s3.amazonaws.com/icons/{{icon}}.svg"/>
+            <div><span>{{name}}</span> <span>{{value}}</span></div>
+          </div>
+          {{/each}}
+        {{/findInArray}}
+        </div>
+        <div class="comodidades">
+          <h2>Comodidades del edificio</h2>
+          {{#findInArray this 'type' 'feature'}} {{#each fields }}
+          <div class="item">
+            <img
+              src="https://acasa-core-ruby.s3.amazonaws.com/icons/{{icon}}.svg"
+              alt=""
+            />
+            <span>{{value}}</span>
+          </div>
+          {{/each}}
+          {{/findInArray}}
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      {{#findInArray this 'type' 'agent'}}
+        {{#plainArrayToJson fields 'name' 'value' }}
+          <span>{{name}}</span>
+          <span>{{email}}</span>
+          <span>{{phone}}</span>
+        {{/plainArrayToJson}}
+      {{/findInArray}}
+    </div>
+
+    <div class="cc">Powered by Castia</div>
+  </body>
+</html>
+

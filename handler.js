@@ -1,22 +1,15 @@
 "use strict";
 
 const chromeLambda = require("@sparticuz/chrome-aws-lambda");
+const hbs = require("./handlebars");
+const fs = require("fs/promises");
+const path = require("path");
 
 module.exports.generate = async (event) => {
-  const { queryStringParameters } = event;
-  if (
-    !queryStringParameters ||
-    !queryStringParameters.url ||
-    !queryStringParameters.screen
-  ) {
-    return { statusCode: 403 };
-  }
-  const { url } = queryStringParameters;
-  const [width, height] = queryStringParameters.screen.split(",");
+  const { body } = event;
 
-  if (!width || !height) {
-    return { statusCode: 403 };
-  }
+  const { templateName, fields } = JSON.parse(body);
+  const htmlContent = await compileTemplate(templateName, fields);
 
   const browser = await chromeLambda.puppeteer.launch({
     args: chromeLambda.args,
@@ -25,17 +18,43 @@ module.exports.generate = async (event) => {
   });
 
   const page = await browser.newPage();
-  await page.setViewport({
-    width: Number(width),
-    height: Number(height),
+  await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+
+  await page.evaluateHandle("document.fonts.ready");
+  const height = await page.evaluate(
+    () => document.documentElement.offsetHeight
+  );
+
+  const pdfBuffer = await page.pdf({
+    printBackground: true,
+    height: `${height}px`,
+    pageRanges: "1",
   });
 
-  await page.goto(url);
-  const screenshot = await page.screenshot({ encoding: "base64" });
+  await browser.close();
 
   return {
     statusCode: 200,
-    body: `<img src="data:image/png;base64,${screenshot}">`,
-    headers: { "Content-Type": "text/html" },
+    body: pdfBuffer.toString("base64"),
+    isBase64Encoded: true,
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "inline",
+    },
   };
 };
+
+async function compileTemplate(templateName, fields) {
+  const template = await readTemplate(templateName);
+  const compiled = hbs.compile(template);
+  return compiled(fields);
+}
+
+async function readTemplate(templateName) {
+  const filepath = path.join(
+    __dirname,
+    "assets/templates/",
+    templateName + ".hbs"
+  );
+  return await fs.readFile(filepath, "utf-8");
+}
