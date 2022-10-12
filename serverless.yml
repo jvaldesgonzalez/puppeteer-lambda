@@ -63,7 +63,7 @@ functions:
   generate:
     handler: handler.generate
     memorySize: 1024
-    timeout: 15
+    timeout: 30
     events:
       - http:
           path: /generate

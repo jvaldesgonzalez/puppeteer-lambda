@@ -1,16 +1,12 @@
 "use strict";
 
 const chromeLambda = require("@sparticuz/chrome-aws-lambda");
-const hbs = require("./handlebars");
-const fs = require("fs/promises");
-const path = require("path");
 
 module.exports.generate = async (event) => {
   const { body } = event;
 
-  const { templateName, fields } = JSON.parse(body);
-  const htmlContent = await compileTemplate(templateName, fields);
-
+  const { rawHtml } = JSON.parse(body);
+  const htmlContent = rawHtml.toString("utf-8");
   const browser = await chromeLambda.puppeteer.launch({
     args: chromeLambda.args,
     defaultViewport: chromeLambda.defaultViewport,
@@ -43,18 +39,3 @@ module.exports.generate = async (event) => {
     },
   };
 };
-
-async function compileTemplate(templateName, fields) {
-  const template = await readTemplate(templateName);
-  const compiled = hbs.compile(template);
-  return compiled(fields);
-}
-
-async function readTemplate(templateName) {
-  const filepath = path.join(
-    __dirname,
-    "assets/templates/",
-    templateName + ".hbs"
-  );
-  return await fs.readFile(filepath, "utf-8");
-}
